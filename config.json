@@ -1,6 +1,6 @@
 {
-  "name": "Onchain Wallet",
-  "short_description": "Onchain watch only wallets",
+  "name": "Liquid Wallet",
+  "short_description": "Liquid watch only wallets",
   "tile": "/liquidwatchonly/static/bitcoin-wallet.png",
   "contributors": ["arcbtc", "motorina0"],
   "min_lnbits_version": "0.11.0"
