@@ -37,7 +37,7 @@ async function walletConfig(path) {
         try {
           const {data} = await LNbits.api.request(
             'PUT',
-            '/watchonly/api/v1/config',
+            '/liquidwatchonly/api/v1/config',
             this.adminkey,
             this.config
           )
@@ -51,7 +51,7 @@ async function walletConfig(path) {
         try {
           const {data} = await LNbits.api.request(
             'GET',
-            '/watchonly/api/v1/config',
+            '/liquidwatchonly/api/v1/config',
             this.adminkey
           )
           this.config = data

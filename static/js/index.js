@@ -1,4 +1,4 @@
-const watchOnly = async () => {
+const liquidWatchOnly = async () => {
   Vue.component(VueQrcode.name, VueQrcode)
 
   await walletConfig('static/components/wallet-config/wallet-config.html')
@@ -100,7 +100,7 @@ const watchOnly = async () => {
           // todo: account deleted
           await LNbits.api.request(
             'PUT',
-            `/watchonly/api/v1/address/${addressData.id}`,
+            `/liquidwatchonly/api/v1/address/${addressData.id}`,
             wallet.adminkey,
             {amount}
           )
@@ -119,7 +119,7 @@ const watchOnly = async () => {
           const wallet = this.g.user.wallets[0]
           await LNbits.api.request(
             'PUT',
-            `/watchonly/api/v1/address/${addressId}`,
+            `/liquidwatchonly/api/v1/address/${addressId}`,
             wallet.adminkey,
             {note}
           )
@@ -269,7 +269,7 @@ const watchOnly = async () => {
         try {
           const {data} = await LNbits.api.request(
             'GET',
-            '/watchonly/api/v1/addresses/' + walletId,
+            '/liquidwatchonly/api/v1/addresses/' + walletId,
             this.g.user.wallets[0].inkey
           )
           return data.map(mapAddressesData)
@@ -456,4 +456,4 @@ const watchOnly = async () => {
     }
   })
 }
-watchOnly()
+liquidWatchOnly()

@@ -136,7 +136,7 @@ async function walletList(path) {
           data.meta = JSON.stringify(meta)
           const response = await LNbits.api.request(
             'POST',
-            '/watchonly/api/v1/wallet',
+            '/liquidwatchonly/api/v1/wallet',
             this.adminkey,
             data
           )
@@ -171,7 +171,7 @@ async function walletList(path) {
             try {
               await LNbits.api.request(
                 'DELETE',
-                '/watchonly/api/v1/wallet/' + walletAccountId,
+                '/liquidwatchonly/api/v1/wallet/' + walletAccountId,
                 this.adminkey
               )
               this.walletAccounts = _.reject(
@@ -196,7 +196,7 @@ async function walletList(path) {
         try {
           const {data} = await LNbits.api.request(
             'GET',
-            `/watchonly/api/v1/wallet?network=${this.network}`,
+            `/liquidwatchonly/api/v1/wallet?network=${this.network}`,
             this.inkey
           )
           return data
@@ -233,7 +233,7 @@ async function walletList(path) {
       openGetFreshAddressDialog: async function (walletId) {
         const {data} = await LNbits.api.request(
           'GET',
-          `/watchonly/api/v1/address/${walletId}`,
+          `/liquidwatchonly/api/v1/address/${walletId}`,
           this.inkey
         )
         const addressData = mapAddressesData(data)

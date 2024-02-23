@@ -177,7 +177,7 @@ async function payment(path) {
 
           const {data} = await LNbits.api.request(
             'POST',
-            '/watchonly/api/v1/psbt',
+            '/liquidwatchonly/api/v1/psbt',
             this.adminkey,
             this.tx
           )
@@ -299,7 +299,7 @@ async function payment(path) {
 
         const {data: psbtUtxos} = await LNbits.api.request(
           'PUT',
-          '/watchonly/api/v1/psbt/utxos',
+          '/liquidwatchonly/api/v1/psbt/utxos',
           this.adminkey,
           {psbtBase64}
         )
@@ -317,7 +317,7 @@ async function payment(path) {
 
           const {data} = await LNbits.api.request(
             'PUT',
-            '/watchonly/api/v1/psbt/extract',
+            '/liquidwatchonly/api/v1/psbt/extract',
             this.adminkey,
             {
               psbtBase64,
@@ -340,7 +340,7 @@ async function payment(path) {
         try {
           const {data} = await LNbits.api.request(
             'PUT',
-            '/watchonly/api/v1/tx/extract',
+            '/liquidwatchonly/api/v1/tx/extract',
             this.adminkey,
             {
               tx_hex: txHex,
@@ -362,7 +362,7 @@ async function payment(path) {
         try {
           const {data} = await LNbits.api.request(
             'POST',
-            '/watchonly/api/v1/tx',
+            '/liquidwatchonly/api/v1/tx',
             this.adminkey,
             {tx_hex: this.signedTxHex}
           )
