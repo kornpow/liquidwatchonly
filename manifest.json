@@ -1,9 +1,9 @@
 {
   "repos": [
     {
-      "id": "watchonly",
-      "organisation": "lnbits",
-      "repository": "watchonly"
+      "id": "liquidwatchonly",
+      "organisation": "kornpow",
+      "repository": "liquidwatchonly"
     }
   ]
 }
