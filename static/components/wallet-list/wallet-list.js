@@ -30,7 +30,8 @@ async function walletList(path) {
           useSerialPort: false,
           data: {
             title: '',
-            masterpub: ''
+            masterpub: '',
+            masterblind: '',
           }
         },
         accountPath: '',
@@ -132,6 +133,8 @@ async function walletList(path) {
             } else {
               data.masterpub = `${outputType}([${fingerprint}/${path}]${xpub}/{0,1}/*)`
             }
+            data.masterblind = this.formDialog.masterblind
+            // TODO: look at me
           }
           data.meta = JSON.stringify(meta)
           const response = await LNbits.api.request(

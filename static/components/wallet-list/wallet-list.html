@@ -231,6 +231,15 @@
           autogrow
           label="Account Extended Public Key; xpub, ypub, zpub; Bitcoin Descriptor"
         ></q-input>
+        <q-input
+          v-if="!formDialog.useSerialPort"
+          filled
+          type="textarea"
+          v-model="formDialog.data.masterblind"
+          height="50px"
+          autogrow
+          label="Master Blinding Key For The Account"
+        ></q-input>
         <q-select
           v-if="formDialog.useSerialPort"
           filled

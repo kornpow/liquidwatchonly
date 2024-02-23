@@ -75,6 +75,7 @@ async def api_wallet_create_or_update(
 ):
     try:
         descriptor, network = parse_key(data.masterpub)
+        # TODO: Look at me
         assert network
         if data.network != network["name"]:
             raise ValueError(
@@ -86,6 +87,7 @@ async def api_wallet_create_or_update(
         new_wallet = WalletAccount(
             id="none",
             masterpub=data.masterpub,
+            masterblind=data.masterblind,
             fingerprint=descriptor.keys[0].fingerprint.hex(),
             type=descriptor.scriptpubkey_type(),
             title=data.title,

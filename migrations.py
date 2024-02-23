@@ -8,6 +8,7 @@ async def m001_initial(db):
             id TEXT NOT NULL PRIMARY KEY,
             "user" TEXT,
             masterpub TEXT NOT NULL,
+            masterblind TEXT NOT NULL,
             title TEXT NOT NULL,
             address_no INTEGER NOT NULL DEFAULT 0,
             balance {db.big_int} NOT NULL
