@@ -12,7 +12,7 @@ from fastapi import Depends, HTTPException, Query, Request
 
 from lnbits.decorators import WalletTypeInfo, get_key_type, require_admin_key
 
-from . import watchonly_ext
+from . import liquidwatchonly_ext
 from .crud import (
     create_config,
     create_fresh_addresses,
@@ -43,7 +43,7 @@ from .models import (
 ###################WALLETS#############################
 
 
-@watchonly_ext.get("/api/v1/wallet")
+@liquidwatchonly_ext.get("/api/v1/wallet")
 async def api_wallets_retrieve(
     network: str = Query("Mainnet"), wallet: WalletTypeInfo = Depends(get_key_type)
 ):
@@ -57,7 +57,7 @@ async def api_wallets_retrieve(
         return []
 
 
-@watchonly_ext.get("/api/v1/wallet/{wallet_id}", dependencies=[Depends(get_key_type)])
+@liquidwatchonly_ext.get("/api/v1/wallet/{wallet_id}", dependencies=[Depends(get_key_type)])
 async def api_wallet_retrieve(wallet_id: str):
     w_wallet = await get_watch_wallet(wallet_id)
 
@@ -69,7 +69,7 @@ async def api_wallet_retrieve(wallet_id: str):
     return w_wallet.dict()
 
 
-@watchonly_ext.post("/api/v1/wallet")
+@liquidwatchonly_ext.post("/api/v1/wallet")
 async def api_wallet_create_or_update(
     data: CreateWallet, w: WalletTypeInfo = Depends(require_admin_key)
 ):
@@ -125,7 +125,7 @@ async def api_wallet_create_or_update(
     return wallet.dict()
 
 
-@watchonly_ext.delete(
+@liquidwatchonly_ext.delete(
     "/api/v1/wallet/{wallet_id}", dependencies=[Depends(require_admin_key)]
 )
 async def api_wallet_delete(wallet_id: str):
@@ -145,14 +145,14 @@ async def api_wallet_delete(wallet_id: str):
 #############################ADDRESSES##########################
 
 
-@watchonly_ext.get("/api/v1/address/{wallet_id}", dependencies=[Depends(get_key_type)])
+@liquidwatchonly_ext.get("/api/v1/address/{wallet_id}", dependencies=[Depends(get_key_type)])
 async def api_fresh_address(wallet_id: str):
     address = await get_fresh_address(wallet_id)
     assert address
     return address.dict()
 
 
-@watchonly_ext.put("/api/v1/address/{id}", dependencies=[Depends(require_admin_key)])
+@liquidwatchonly_ext.put("/api/v1/address/{id}", dependencies=[Depends(require_admin_key)])
 async def api_update_address(id: str, req: Request):
     body = await req.json()
     params = {}
@@ -180,7 +180,7 @@ async def api_update_address(id: str, req: Request):
     return address
 
 
-@watchonly_ext.get("/api/v1/addresses/{wallet_id}")
+@liquidwatchonly_ext.get("/api/v1/addresses/{wallet_id}")
 async def api_get_addresses(wallet_id, w: WalletTypeInfo = Depends(get_key_type)):
     wallet = await get_watch_wallet(wallet_id)
     if not wallet:
@@ -231,7 +231,7 @@ async def api_get_addresses(wallet_id, w: WalletTypeInfo = Depends(get_key_type)
 #############################PSBT##########################
 
 
-@watchonly_ext.post("/api/v1/psbt", dependencies=[Depends(require_admin_key)])
+@liquidwatchonly_ext.post("/api/v1/psbt", dependencies=[Depends(require_admin_key)])
 async def api_psbt_create(data: CreatePsbt):
     try:
         vin = [
@@ -292,7 +292,7 @@ async def api_psbt_create(data: CreatePsbt):
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
 
 
-@watchonly_ext.put("/api/v1/psbt/utxos")
+@liquidwatchonly_ext.put("/api/v1/psbt/utxos")
 async def api_psbt_utxos_tx(
     req: Request, w: WalletTypeInfo = Depends(require_admin_key)
 ):
@@ -310,7 +310,7 @@ async def api_psbt_utxos_tx(
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
 
 
-@watchonly_ext.put("/api/v1/psbt/extract", dependencies=[Depends(require_admin_key)])
+@liquidwatchonly_ext.put("/api/v1/psbt/extract", dependencies=[Depends(require_admin_key)])
 async def api_psbt_extract_tx(data: ExtractPsbt):
     network = NETWORKS["main"] if data.network == "Mainnet" else NETWORKS["test"]
     try:
@@ -341,7 +341,7 @@ async def api_psbt_extract_tx(data: ExtractPsbt):
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
 
 
-@watchonly_ext.put("/api/v1/tx/extract", dependencies=[Depends(require_admin_key)])
+@liquidwatchonly_ext.put("/api/v1/tx/extract", dependencies=[Depends(require_admin_key)])
 async def api_extract_tx(data: ExtractTx):
     network = NETWORKS["main"] if data.network == "Mainnet" else NETWORKS["test"]
     try:
@@ -361,7 +361,7 @@ async def api_extract_tx(data: ExtractTx):
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
 
 
-@watchonly_ext.post("/api/v1/tx")
+@liquidwatchonly_ext.post("/api/v1/tx")
 async def api_tx_broadcast(
     data: SerializedTransaction, w: WalletTypeInfo = Depends(require_admin_key)
 ):
@@ -389,7 +389,7 @@ async def api_tx_broadcast(
 #############################CONFIG##########################
 
 
-@watchonly_ext.put("/api/v1/config")
+@liquidwatchonly_ext.put("/api/v1/config")
 async def api_update_config(
     data: Config, w: WalletTypeInfo = Depends(require_admin_key)
 ):
@@ -398,7 +398,7 @@ async def api_update_config(
     return config.dict()
 
 
-@watchonly_ext.get("/api/v1/config")
+@liquidwatchonly_ext.get("/api/v1/config")
 async def api_get_config(w: WalletTypeInfo = Depends(get_key_type)):
     config = await get_config(w.wallet.user)
     if not config:

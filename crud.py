@@ -14,7 +14,7 @@ async def create_watch_wallet(user: str, w: WalletAccount) -> WalletAccount:
     wallet_id = urlsafe_short_hash()
     await db.execute(
         """
-        INSERT INTO watchonly.wallets (
+        INSERT INTO liquidwatchonly.wallets (
             id,
             "user",
             masterpub,
@@ -48,14 +48,14 @@ async def create_watch_wallet(user: str, w: WalletAccount) -> WalletAccount:
 
 async def get_watch_wallet(wallet_id: str) -> Optional[WalletAccount]:
     row = await db.fetchone(
-        "SELECT * FROM watchonly.wallets WHERE id = ?", (wallet_id,)
+        "SELECT * FROM liquidwatchonly.wallets WHERE id = ?", (wallet_id,)
     )
     return WalletAccount.from_row(row) if row else None
 
 
 async def get_watch_wallets(user: str, network: str) -> List[WalletAccount]:
     rows = await db.fetchall(
-        """SELECT * FROM watchonly.wallets WHERE "user" = ? AND network = ?""",
+        """SELECT * FROM liquidwatchonly.wallets WHERE "user" = ? AND network = ?""",
         (user, network),
     )
     return [WalletAccount(**row) for row in rows]
@@ -65,16 +65,16 @@ async def update_watch_wallet(wallet_id: str, **kwargs) -> Optional[WalletAccoun
     q = ", ".join([f"{field[0]} = ?" for field in kwargs.items()])
 
     await db.execute(
-        f"UPDATE watchonly.wallets SET {q} WHERE id = ?", (*kwargs.values(), wallet_id)
+        f"UPDATE liquidwatchonly.wallets SET {q} WHERE id = ?", (*kwargs.values(), wallet_id)
     )
     row = await db.fetchone(
-        "SELECT * FROM watchonly.wallets WHERE id = ?", (wallet_id,)
+        "SELECT * FROM liquidwatchonly.wallets WHERE id = ?", (wallet_id,)
     )
     return WalletAccount.from_row(row) if row else None
 
 
 async def delete_watch_wallet(wallet_id: str) -> None:
-    await db.execute("DELETE FROM watchonly.wallets WHERE id = ?", (wallet_id,))
+    await db.execute("DELETE FROM liquidwatchonly.wallets WHERE id = ?", (wallet_id,))
 
 
 ########################ADDRESSES#######################
@@ -135,7 +135,7 @@ async def create_fresh_addresses(
 
         await db.execute(
             """
-        INSERT INTO watchonly.addresses (
+        INSERT INTO liquidwatchonly.addresses (
             id,
             address,
             wallet,
@@ -151,7 +151,7 @@ async def create_fresh_addresses(
     # return fresh addresses
     rows = await db.fetchall(
         """
-            SELECT * FROM watchonly.addresses
+            SELECT * FROM liquidwatchonly.addresses
             WHERE wallet = ? AND branch_index = ? AND address_index >= ? AND address_index < ?
             ORDER BY branch_index, address_index
         """,
@@ -163,7 +163,7 @@ async def create_fresh_addresses(
 
 async def get_address(address: str) -> Optional[Address]:
     row = await db.fetchone(
-        "SELECT * FROM watchonly.addresses WHERE address = ?", (address,)
+        "SELECT * FROM liquidwatchonly.addresses WHERE address = ?", (address,)
     )
     return Address.from_row(row) if row else None
 
@@ -173,7 +173,7 @@ async def get_address_at_index(
 ) -> Optional[Address]:
     row = await db.fetchone(
         """
-            SELECT * FROM watchonly.addresses
+            SELECT * FROM liquidwatchonly.addresses
             WHERE wallet = ? AND branch_index = ? AND address_index = ?
         """,
         (
@@ -188,7 +188,7 @@ async def get_address_at_index(
 async def get_addresses(wallet_id: str) -> List[Address]:
     rows = await db.fetchall(
         """
-            SELECT * FROM watchonly.addresses WHERE wallet = ?
+            SELECT * FROM liquidwatchonly.addresses WHERE wallet = ?
             ORDER BY branch_index, address_index
         """,
         (wallet_id,),
@@ -201,15 +201,15 @@ async def update_address(id: str, **kwargs) -> Optional[Address]:
     q = ", ".join([f"{field[0]} = ?" for field in kwargs.items()])
 
     await db.execute(
-        f"""UPDATE watchonly.addresses SET {q} WHERE id = ? """,
+        f"""UPDATE liquidwatchonly.addresses SET {q} WHERE id = ? """,
         (*kwargs.values(), id),
     )
-    row = await db.fetchone("SELECT * FROM watchonly.addresses WHERE id = ?", (id,))
+    row = await db.fetchone("SELECT * FROM liquidwatchonly.addresses WHERE id = ?", (id,))
     return Address.from_row(row) if row else None
 
 
 async def delete_addresses_for_wallet(wallet_id: str) -> None:
-    await db.execute("DELETE FROM watchonly.addresses WHERE wallet = ?", (wallet_id,))
+    await db.execute("DELETE FROM liquidwatchonly.addresses WHERE wallet = ?", (wallet_id,))
 
 
 ######################CONFIG#######################
@@ -217,30 +217,30 @@ async def create_config(user: str) -> Config:
     config = Config()
     await db.execute(
         """
-        INSERT INTO watchonly.config ("user", json_data)
+        INSERT INTO liquidwatchonly.config ("user", json_data)
         VALUES (?, ?)
         """,
         (user, json.dumps(config.dict())),
     )
     row = await db.fetchone(
-        """SELECT json_data FROM watchonly.config WHERE "user" = ?""", (user,)
+        """SELECT json_data FROM liquidwatchonly.config WHERE "user" = ?""", (user,)
     )
     return json.loads(row[0], object_hook=lambda d: Config(**d))
 
 
 async def update_config(config: Config, user: str) -> Optional[Config]:
     await db.execute(
-        """UPDATE watchonly.config SET json_data = ? WHERE "user" = ?""",
+        """UPDATE liquidwatchonly.config SET json_data = ? WHERE "user" = ?""",
         (json.dumps(config.dict()), user),
     )
     row = await db.fetchone(
-        """SELECT json_data FROM watchonly.config WHERE "user" = ?""", (user,)
+        """SELECT json_data FROM liquidwatchonly.config WHERE "user" = ?""", (user,)
     )
     return json.loads(row[0], object_hook=lambda d: Config(**d))
 
 
 async def get_config(user: str) -> Optional[Config]:
     row = await db.fetchone(
-        """SELECT json_data FROM watchonly.config WHERE "user" = ?""", (user,)
+        """SELECT json_data FROM liquidwatchonly.config WHERE "user" = ?""", (user,)
     )
     return json.loads(row[0], object_hook=lambda d: Config(**d)) if row else None

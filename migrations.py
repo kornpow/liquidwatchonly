@@ -4,7 +4,7 @@ async def m001_initial(db):
     """
     await db.execute(
         f"""
-        CREATE TABLE watchonly.wallets (
+        CREATE TABLE liquidwatchonly.wallets (
             id TEXT NOT NULL PRIMARY KEY,
             "user" TEXT,
             masterpub TEXT NOT NULL,
@@ -17,7 +17,7 @@ async def m001_initial(db):
 
     await db.execute(
         f"""
-        CREATE TABLE watchonly.addresses (
+        CREATE TABLE liquidwatchonly.addresses (
             id TEXT NOT NULL PRIMARY KEY,
             address TEXT NOT NULL,
             wallet TEXT NOT NULL,
@@ -28,7 +28,7 @@ async def m001_initial(db):
 
     await db.execute(
         """
-        CREATE TABLE watchonly.mempool (
+        CREATE TABLE liquidwatchonly.mempool (
             "user" TEXT NOT NULL,
             endpoint TEXT NOT NULL
         );
@@ -42,15 +42,15 @@ async def m002_add_columns_to_adresses(db):
     """
 
     await db.execute(
-        "ALTER TABLE watchonly.addresses ADD COLUMN branch_index INTEGER NOT NULL DEFAULT 0;"
+        "ALTER TABLE liquidwatchonly.addresses ADD COLUMN branch_index INTEGER NOT NULL DEFAULT 0;"
     )
     await db.execute(
-        "ALTER TABLE watchonly.addresses ADD COLUMN address_index INTEGER NOT NULL DEFAULT 0;"
+        "ALTER TABLE liquidwatchonly.addresses ADD COLUMN address_index INTEGER NOT NULL DEFAULT 0;"
     )
     await db.execute(
-        "ALTER TABLE watchonly.addresses ADD COLUMN has_activity BOOLEAN DEFAULT false;"
+        "ALTER TABLE liquidwatchonly.addresses ADD COLUMN has_activity BOOLEAN DEFAULT false;"
     )
-    await db.execute("ALTER TABLE watchonly.addresses ADD COLUMN note TEXT;")
+    await db.execute("ALTER TABLE liquidwatchonly.addresses ADD COLUMN note TEXT;")
 
 
 async def m003_add_columns_to_wallets(db):
@@ -58,9 +58,9 @@ async def m003_add_columns_to_wallets(db):
     Add 'type' and 'fingerprint' columns to the 'wallets' table
     """
 
-    await db.execute("ALTER TABLE watchonly.wallets ADD COLUMN type TEXT;")
+    await db.execute("ALTER TABLE liquidwatchonly.wallets ADD COLUMN type TEXT;")
     await db.execute(
-        "ALTER TABLE watchonly.wallets ADD COLUMN fingerprint TEXT NOT NULL DEFAULT '';"
+        "ALTER TABLE liquidwatchonly.wallets ADD COLUMN fingerprint TEXT NOT NULL DEFAULT '';"
     )
 
 
@@ -71,7 +71,7 @@ async def m004_create_config_table(db):
     """
 
     await db.execute(
-        """CREATE TABLE watchonly.config (
+        """CREATE TABLE liquidwatchonly.config (
             "user" TEXT NOT NULL,
             json_data TEXT NOT NULL
         );"""
@@ -84,7 +84,7 @@ async def m005_add_network_column_to_wallets(db):
     """
 
     await db.execute(
-        "ALTER TABLE watchonly.wallets ADD COLUMN network TEXT DEFAULT 'Mainnet';"
+        "ALTER TABLE liquidwatchonly.wallets ADD COLUMN network TEXT DEFAULT 'Mainnet';"
     )
 
 
@@ -92,11 +92,11 @@ async def m006_drop_mempool_table(db):
     """
     Mempool data is now part of `config`
     """
-    await db.execute("DROP TABLE watchonly.mempool;")
+    await db.execute("DROP TABLE liquidwatchonly.mempool;")
 
 
 async def m007_add_wallet_meta_data(db):
     """
     Add 'meta' for storing various metadata about the wallet
     """
-    await db.execute("ALTER TABLE watchonly.wallets ADD COLUMN meta TEXT DEFAULT '{}';")
+    await db.execute("ALTER TABLE liquidwatchonly.wallets ADD COLUMN meta TEXT DEFAULT '{}';")
